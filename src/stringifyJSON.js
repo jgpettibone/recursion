@@ -3,5 +3,42 @@
 
 // but you don't so you're going to have to write it from scratch:
 var stringifyJSON = function (obj) {
-  // your code goes here
+    
+    var typeArr = Object.prototype.toString.call(obj);
+    var type = typeArr.slice(8,typeArr.length-1);
+    
+    if ((type === 'Number') || (type === 'Boolean')) {
+	return obj.toString();
+    } else if (type === 'Null') {
+	return "null";
+    } else if (type === 'String') {
+	return '"' + obj + '"';
+    } else if (type === 'Array') {
+	var len = obj.length;
+	if (len === 0) {
+	    return '[]';
+	} else {
+	    var elements = '[';
+	    for (var i=0; i<len; i++) {
+		elements += stringifyJSON(obj[i]) + ",";
+	    }
+	    var els = elements.slice(0, elements.length-1);
+	    els += ']';
+	    return els;
+	}
+    } else if (type === 'Object') {
+	var len = Object.keys(obj).length;
+	if (len === 0) { 
+	    return '{}';
+	}
+	var elements = '{';
+	for (var key in obj) {
+	    elements += stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
+	}
+	var els = elements.slice(0, elements.length-1);
+	els += '}';
+	return els;
+    } 
+    return '';
+
 };
