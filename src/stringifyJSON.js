@@ -3,6 +3,14 @@
 
 // but you don't so you're going to have to write it from scratch:
 var stringifyJSON = function (obj) {
+
+    var strCleanUp = function(str) {
+      var lastInd = str.length-1;
+      if (str.charAt(lastInd) === ',') {
+	str = str.slice(0,lastInd);
+      }
+      return str;
+    };
     
     var typeArr = Object.prototype.toString.call(obj);
     var type = typeArr.slice(8,typeArr.length-1);
@@ -19,17 +27,21 @@ var stringifyJSON = function (obj) {
 	var len = obj.length;
 	if (len === 0) {
 	    return '[]';
-	} else {
-	    var elements = '[';
-	    for (var i=0; i<len; i++) {
-		elements += stringifyJSON(obj[i]) + ",";
+	} 
+	var elements = '[';
+	for (var i=0; i<len; i++) {
+	    /*
+	    var el = stringifyJSON(obj[i]);
+	    if (el != '') {
+		elements += el + ",";
 	    }
-	    if (elements.charAt(elements.length-1) === ',') {
-		var els = elements.slice(0, elements.length-1);
-	    }
-	    els += ']';
-	    return els;
+	    */
+	    elements += stringifyJSON(obj[i]) + ",";
 	}
+	elements = strCleanUp(elements) + ']';
+	//elements += ']';
+	return elements;
+
     } else if (type === 'Object') {
 	var len = Object.keys(obj).length;
 	if (len === 0) { 
@@ -44,10 +56,8 @@ var stringifyJSON = function (obj) {
 	    }
 	    //elements += stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
 	}
-	if (elements.charAt(elements.length-1) === ',') {
-	    var elements = elements.slice(0, elements.length-1);
-	}
-	elements += '}';
+	elements = strCleanUp(elements) + '}';
+	//elements += '}';
 	return elements;
     } 
     return '';
