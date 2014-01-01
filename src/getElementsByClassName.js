@@ -14,7 +14,9 @@ var getElementsByClassName = function (className) {
 	var elements = arguments[1];
     }
 
-    if (elements.className === className) { 
+    var re = new RegExp("(?:^|\\s)" + className + "(?:\\s|$)");
+    if (re.test(elements.className)) {
+	console.log(elements.className + " = " + className);
         arr.push(elements); 
     }
 
