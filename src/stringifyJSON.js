@@ -4,62 +4,55 @@
 // but you don't so you're going to have to write it from scratch:
 var stringifyJSON = function (obj) {
 
-    var strCleanUp = function(str) {
-      var lastInd = str.length-1;
-      if (str.charAt(lastInd) === ',') {
-	str = str.slice(0,lastInd);
+  if (typeof obj === 'string') {
+    return '"' + obj + '"';
+  }
+
+  if (Array.isArray(obj)) {
+    var result = '[';
+
+    result += _.map(obj, function(item) {
+      return stringifyJSON(item);
+    }).join(',');
+    console.log(result);
+
+    result += ']';
+    return result;
+  }
+
+  if (obj && typeof obj === 'object') {
+    var result = '{';
+
+    var arr =[];
+    for (var key in obj) {
+      var value = obj[key];
+      if (typeof value != 'function' && typeof value != 'undefined') {
+        arr.push(stringifyJSON(key) + ':' + stringifyJSON(value))
       }
-      return str;
-    };
-    
-    var typeArr = Object.prototype.toString.call(obj);
-    var type = typeArr.slice(8,typeArr.length-1);
-    
-    if ((type === 'Number') || (type === 'Boolean')) {
-	return obj.toString();
-    } else if (type === 'Null') {
-	return "null";
-    } else if (type === 'String') {
-	return '"' + obj + '"';
-    } else if ((type === 'Function') || (type === 'Undefined')) { 
-	return '';
-    } else if (type === 'Array') {
-	var len = obj.length;
-	if (len === 0) {
-	    return '[]';
-	} 
-	var elements = '[';
-	for (var i=0; i<len; i++) {
-	    /*
-	    var el = stringifyJSON(obj[i]);
-	    if (el != '') {
-		elements += el + ",";
-	    }
-	    */
-	    elements += stringifyJSON(obj[i]) + ",";
-	}
-	elements = strCleanUp(elements) + ']';
-	//elements += ']';
-	return elements;
+    }
+    result += arr.join(',') + '}';
+    return result;
+  }
 
-    } else if (type === 'Object') {
-	var len = Object.keys(obj).length;
-	if (len === 0) { 
-	    return '{}';
-	}
-	var elements = '{';
-	for (var key in obj) {
-	    var keyel = stringifyJSON(key);
-	    var valel = stringifyJSON(obj[key]);
-	    if ((keyel != '') && (valel != '')) {
-		elements += keyel + ':' + valel + ',';
-	    }
-	    //elements += stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
-	}
-	elements = strCleanUp(elements) + '}';
-	//elements += '}';
-	return elements;
-    } 
-    return '';
 
-};
+/*
+    result += _.map(obj, function(value, key) {
+      if (typeof value === 'function') {return; }
+     return stringifyJSON(key) + ':' + stringifyJSON(value);
+    }).join(',');
+    console.log(result);
+
+    result += '}';
+    return result;
+  }
+  */
+/*
+if (typeof obj === 'function' || !obj) {
+  return "";
+}
+*/
+
+  return "" + obj;
+
+
+ };
