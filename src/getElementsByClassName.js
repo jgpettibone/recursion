@@ -6,33 +6,36 @@
 // But instead we're going to implement it from scratch:
 var getElementsByClassName = function (className) {
 
-    var arr = []; 
+  var root = root || document.body;
+  var result = [];
+/*
+  if ($(root).hasClass(className)) {
+    result.push(root);
+    //console.log(result, root);
+  }
+*/
 
-    if ( typeof arguments[1] === 'undefined' ) { 
-        var elements = document.body; 
-    } else {
-	var elements = arguments[1];
+  var getElem = function (root) {
+    if ($(root).hasClass(className)) {
+      result.push(root);
     }
-
-    var re = new RegExp("(?:^|\\s)" + className + "(?:\\s|$)");
-    if (re.test(elements.className)) {
-	console.log(elements.className + " = " + className);
-        arr.push(elements); 
+    for (var i = 0; i<root.childNodes.length; i++) {
+      getElem(root.childNodes[i]);
     }
+  }
 
-    var children = elements.childNodes;  
+  getElem(root);
 
-    if ( typeof children != 'undefined') {
-	var childLen = children.length;
-	if ( childLen != 0 )  {
-	    for (var i=0; i<childLen; i++) {
- 	        var newArr = getElementsByClassName(className, children[i]);
-	        if (typeof newArr != 'undefined') {
- 	            arr = arr.concat(newArr);
-	        }
-            }
-        } 
-    }
-    return arr;
+/*
+  for (var i = 0; i<root.childNodes.length; i++) {
+    var child = root.childNodes[i];
+    var children = getElementsByClassName(className, child);
+    //console.log('Check2:', result, children);
+    result = result.concat(children);
+    //console.log('Check3:', result, children);    
+  }
+*/
+
+return result;
 
 };
